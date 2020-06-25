@@ -19,17 +19,20 @@
 <mujoco model="wam(v1.31)">
     <compiler coordinate="local" angle="radian" meshdir="meshes/"/>
     <default>
-        <joint type="hinge" limited="true" pos="0 0 0" axis="0 0 1"/>
+        <default class="wam">
+            <joint type="hinge" limited="true" pos="0 0 0" axis="0 0 1"/>
+<!--            <geom margin="0"/>-->
+        </default>
         <default class="viz">
             <geom type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1"/>
         </default>
         <default class="col">
             <geom type="mesh" contype="0" conaffinity="1" group="0" rgba="0.5 0.6 0.7 1"/>
         </default>
-        <default class="init_ball">
-            <geom type="sphere" size="0.04" rgba="1 0.28 0 1" density="40"/>
-<!--            <joint type="free"/>-->
-        </default>>
+        <default class="contact_geom">
+            <geom condim="1" friction="0 0 0" margin="0" solimp="1 1 0" solref="0.1 0.03"/>
+            <!--            <joint type="free"/>-->
+        </default>
     </default>
     <asset>
         <mesh file="base_link_fine.stl"/>
@@ -72,7 +75,7 @@
                dir="-.1 -.2 -1.3"/>
         <geom name="ground" type="plane" pos="0 0 0" size="10 5 1" conaffinity="1" contype="1" material="MatGnd"/>
 
-        <body name="wam/base_link_left" pos="-2.5 0 2" quat="0 0 -1 0">
+        <body name="wam/base_link_left" pos="-2.5 0 2" quat="0 0 -1 0" childclass="wam">
             <inertial pos="0 0 0" mass="1" diaginertia="0.1 0.1 0.1"/>
             <geom class="viz" mesh="base_link_fine"/>
             <geom class="col" mesh="base_link_convex"/>
@@ -202,7 +205,7 @@
                                         <geom class="viz" mesh="wrist_palm_link_fine"/>
                                         <geom class="col" mesh="wrist_palm_link_convex"/>
                                         <!--                                        <include file="include_bhandChain.xml"/>-->
-                                        <body name="paddle" pos="0 0 0.26" >
+                                        <body name="paddle" pos="0 0 0.26" childclass="contact_geom">
                                             <geom name="bat" type="cylinder" size="0.075 0.0015" rgba="1 0 0 1" quat="0.71 0 0.71 0"/>
                                             <geom name="handle" type="box" size="0.005 0.01 0.05" pos="0 0 -0.08" rgba="1 1 1 1"/>
                                         </body>
@@ -222,31 +225,40 @@
             <geom name="table_base_4" type="box" size="0.05 0.05 .375" rgba="1 1 1 1" pos="-1 0.7 0.375"/>
 <!--            <geom name="table_top" type="box" size="1.37 .7625 .01" rgba="0 0 1 1" pos="0 0 0.76"/>-->
             <body name="table_top" pos="0 0 0.76">
-                <geom name="plane" type="box" size="1.37 .7625 .01" rgba="0 0 0.5 1" pos="0 0 0"/>
-                <geom name="net" type="box" size="0.01 0.915 0.07625" material="MatGnd" rgba="1 1 1 0.5"
-                      pos="0 0 0.08625"/>
+                <geom class="contact_geom" name="plane" type="box" size="1.37 .7625 .01" rgba="0 0 0.5 1" pos="0 0 0" />
+                <geom class="contact_geom" name="net" type="box" size="0.01 0.915 0.07625" material="MatGnd" rgba="1 1 1 0.5"
+                      pos="0 0 0.08625" />
                 <geom name="left_while_line" type="box" size="1.37 .02 .001" rgba="1 1 1 1" pos="0 -0.7425 0.01"/>
                 <geom name="center_while_line" type="box" size="1.37 .01 .001" rgba="1 1 1 1" pos="0 0 0.01"/>
                 <geom name="right_while_line" type="box" size="1.37 .02 .001" rgba="1 1 1 1" pos="0 0.7425 0.01"/>
                 <geom name="right_side_line" type="box" size="0.02 .7625 .001" rgba="1 1 1 1" pos="1.35 0 0.01"/>
                 <geom name="left_side_line" type="box" size="0.02 .7625 .001" rgba="1 1 1 1" pos="-1.35 0 0.01"/>
-<!--                <composite prefix="side_line" type="grid" count="54 3 1" spacing="0.05" offset="0 0 0.011">-->
-<!--                    &lt;!&ndash;            <skin material="matgnd" inflate="0.001" subgrid="3" texcoord="true"/>&ndash;&gt;-->
-<!--                    <skin inflate="0.001" subgrid="3" rgba="1 1 1 1" texcoord="true"/>-->
-<!--                    <geom size="0.01"/>-->
-<!--                    <pin coord="0 0"/>-->
-<!--                    <pin coord="53 0"/>-->
-<!--                    <pin coord="0 2"/>-->
-<!--                    <pin coord="53 2"/>-->
-<!--                    <pin coord="27 0"/>-->
-<!--                    <pin coord="27 2"/>-->
-<!--                </composite>-->
+                <!--                <composite prefix="side_line" type="grid" count="54 3 1" spacing="0.05" offset="0 0 0.011">-->
+                <!--                    &lt;!&ndash;            <skin material="matgnd" inflate="0.001" subgrid="3" texcoord="true"/>&ndash;&gt;-->
+                <!--                    <skin inflate="0.001" subgrid="3" rgba="1 1 1 1" texcoord="true"/>-->
+                <!--                    <geom size="0.01"/>-->
+                <!--                    <pin coord="0 0"/>-->
+                <!--                    <pin coord="53 0"/>-->
+                <!--                    <pin coord="0 2"/>-->
+                <!--                    <pin coord="53 2"/>-->
+                <!--                    <pin coord="27 0"/>-->
+                <!--                    <pin coord="27 2"/>-->
+                <!--                </composite>-->
             </body>
         </body>
-        <body pos="-1 -0.5 2">
-            <geom class="init_ball" density="40" condim="6"/>
-            <freejoint name="ball_free"/>
-<!--            <geom type="sphere" size="0.04" rgba="1 0.28 0 1" density="40"/>-->
+<!--        <body pos="-1 -0.5 2">-->
+<!--            <geom class="init_ball" density="40" condim="6"/>-->
+<!--            <freejoint name="ball_free"/>-->
+<!--&lt;!&ndash;            <geom type="sphere" size="0.04" rgba="1 0.28 0 1" density="40"/>&ndash;&gt;-->
+<!--        </body>-->
+        <!-- Target -->
+        <body name="tar" pos="-1 0 3">
+            <joint axis="1 0 0" damping="0.0" name="tar:x" pos="0 0 0" stiffness="0" type="slide" frictionloss="0"/>
+            <joint axis="0 1 0" damping="0.0" name="tar:y" pos="0 0 0" stiffness="0" type="slide" frictionloss="0"/>
+            <joint axis="0 0 1" damping="0.0" name="tar:z" pos="0 0 0" stiffness="0" type="slide" frictionloss="0"/>
+            <geom size="0.025 0.025 0.025" type="sphere" condim="1" name="tar" rgba="1 0 0 1" mass="0.01" friction="0 0 0" solimp="1 1 0"  solref="0.1 0.03"/>
+            <site name="tar" pos="0 0 0" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere"/>
+<!--            <geom conaffinity="0" contype="0" name="target" pos="0 0 0" rgba="0.9 0.2 0.2 1" size=".009" type="sphere"/>-->
         </body>
 
 <!--        <composite prefix="side_line" type="grid" count="54 3 1" spacing="0.05" offset="0 0 1">-->
@@ -286,7 +298,7 @@
         <position joint="wam/bhand/finger_3/dist_joint" kp="1" ctrlrange="0 0.837758"/>
 
 <!--                ball-->
-        <velocity joint="ball_free" kv="1" gear="2 1 0 0 0 0 "/>
+<!--        <velocity joint="ball_free" kv="1" gear="2 1 0 0 0 0 "/>-->
     </actuator>
 
 </mujoco>
