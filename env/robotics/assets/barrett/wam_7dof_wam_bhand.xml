@@ -18,6 +18,10 @@
 
 <mujoco model="wam(v1.31)">
     <compiler coordinate="local" angle="radian" meshdir="meshes/"/>
+    <option timestep="0.002">
+        <flag warmstart="enable"/>
+    </option>
+    <option gravity="0 0 -9.81"/>
     <default>
         <default class="wam">
             <joint type="hinge" limited="true" pos="0 0 0" axis="0 0 1"/>
@@ -252,7 +256,7 @@
 <!--&lt;!&ndash;            <geom type="sphere" size="0.04" rgba="1 0.28 0 1" density="40"/>&ndash;&gt;-->
 <!--        </body>-->
         <!-- Target -->
-        <body name="tar" pos="-1 0 3">
+        <body name="tar" pos="-1 -0.5 1.5">
             <joint axis="1 0 0" damping="0.0" name="tar:x" pos="0 0 0" stiffness="0" type="slide" frictionloss="0"/>
             <joint axis="0 1 0" damping="0.0" name="tar:y" pos="0 0 0" stiffness="0" type="slide" frictionloss="0"/>
             <joint axis="0 0 1" damping="0.0" name="tar:z" pos="0 0 0" stiffness="0" type="slide" frictionloss="0"/>
@@ -260,6 +264,7 @@
             <site name="tar" pos="0 0 0" size="0.02 0.02 0.02" rgba="1 0 0 1" type="sphere"/>
 <!--            <geom conaffinity="0" contype="0" name="target" pos="0 0 0" rgba="0.9 0.2 0.2 1" size=".009" type="sphere"/>-->
         </body>
+
 
 <!--        <composite prefix="side_line" type="grid" count="54 3 1" spacing="0.05" offset="0 0 1">-->
 <!--&lt;!&ndash;            <skin material="matgnd" inflate="0.001" subgrid="3" texcoord="true"/>&ndash;&gt;-->
@@ -277,6 +282,9 @@
 <!--        </composite>-->
 
     </worldbody>
+    <keyframe>
+        <key time="0" name="velocity" qvel="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.8 1 0.1"/>
+    </keyframe>
     <actuator>
         <!--WAM Arm-->
         <position joint="wam/base_yaw_joint" kp="50" ctrlrange="-2.6 2.6"/>
